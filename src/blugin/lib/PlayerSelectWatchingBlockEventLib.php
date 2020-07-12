@@ -30,6 +30,7 @@ namespace blugin\lib;
 use blugin\lib\event\PlayerSelectWatchingBlockEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerToggleSneakEvent;
+use pocketmine\network\mcpe\protocol\MovePlayerPacket;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
@@ -73,5 +74,15 @@ class PlayerSelectWatchingBlockEventLib extends PluginBase implements Listener{
 
         $ev = new PlayerSelectWatchingBlockEvent($player, $targetBlock);
         $ev->call();
+
+        if($ev->isCancelled())
+            return;
+
+        $lookAt = $ev->getLookAt();
+        if($lookAt !== null){
+            $player->lookAt($lookAt->add(0, -$player->getEyeHeight(), 0));
+            $location = $player->getLocation();
+            $player->getNetworkSession()->syncMovement($location, $location->getYaw(), $location->getPitch(), MovePlayerPacket::MODE_TELEPORT);
+        }
     }
 }

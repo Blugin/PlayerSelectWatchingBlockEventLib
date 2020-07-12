@@ -31,6 +31,7 @@ use pocketmine\block\Block;
 use pocketmine\event\Cancellable;
 use pocketmine\event\CancellableTrait;
 use pocketmine\event\player\PlayerEvent;
+use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 
 class PlayerSelectWatchingBlockEvent extends PlayerEvent implements Cancellable{
@@ -38,13 +39,27 @@ class PlayerSelectWatchingBlockEvent extends PlayerEvent implements Cancellable{
 
     /** @var Block */
     private $blockSelected;
+    /** @var Vector3|null */
+    private $lookAt;
 
-    public function __construct(Player $player, Block $blockSelected){
+    public function __construct(Player $player, Block $blockSelected, ?Vector3 $lookAt = null){
         $this->player = $player;
         $this->blockSelected = $blockSelected;
+        $this->lookAt = $lookAt;
     }
 
+    /** @return Block */
     public function getBlock() : Block{
         return $this->blockSelected;
+    }
+
+    /** @return Vector3|null */
+    public function getLookAt() : ?Vector3{
+        return $this->lookAt;
+    }
+
+    /** @param Vector3|null $lookAt */
+    public function setLookAt(?Vector3 $lookAt) : void{
+        $this->lookAt = $lookAt;
     }
 }
